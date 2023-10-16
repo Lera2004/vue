@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/vue@2"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <title>Authors</title>
     <style>
         .red {
@@ -87,33 +87,28 @@
         }
     ]
 
-    new Vue({
-        el: '#app',
-        data: {
-            qoutes: quotesArray,
-            isAuthor: "",
-            sortedQuotes: [],
-        },
-        computed: {
-            filteredQuotes: function () {
-                return this.qoutes.filter(element => {
-                    return Boolean(this.isAuthor) == Boolean(element.source);
+    const { createApp, ref, computed } = Vue;
+    createApp({
+        setup() {
+            const qoutes = ref(quotesArray)
+            const isAuthor = ref('')
+            const sortedQuotes = ref([])
+
+            const filteredQuotes = computed( () => {
+                return qoutes.value.filter(element => {
+                    return Boolean(isAuthor.value) == Boolean(element.source);
                 })
-                // var resArray = []; 
-                //  for(var i=0; i<this.qoutes.length; i++) { 
-                //    if(Boolean(this.isAuthor) == Boolean(this.qoutes[i].source)){ 
-                //      resArray.push (this.qoutes[i]); 
-                //    } 
-                //  } 
-                //  return resArray; 
             }
-        },
-        methods: {
-            sortBySource() {
-                this.sortedQuotes = this.qoutes.sort((a, b) => (a.source > b.source) ? 1 : -1);
+            );
+             sortBySource = function() {
+               sortedQuotes.value = qoutes.value.sort((a, b) => (a.source > b.source) ? 1 : -1);
+            }
+            
+            return {
+                qoutes, isAuthor, sortedQuotes, filteredQuotes, sortBySource
             }
         }
-    })  
+    }).mount('#app')
 </script>
 
 </html>
