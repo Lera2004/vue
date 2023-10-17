@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composition API</title>
+    <style>
+        .highlighted-text {
+            color: #E44D26; 
+            font-weight: bold; 
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4; 
+            font-weight: bold;
+        }
+        #app {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #FFFFFF; 
+            padding: 20px;
+            border-radius: 5px; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        }
+        input {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: 2px solid #E44D26; 
+            border-radius: 5px; 
+        }
+        table {
+            width: 90%; 
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #D1D1D1; 
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #E44D26; 
+            color: #FFFFFF; 
+        }
+        tr:nth-child(even) {
+            background-color: #F9F9F9; 
+        }
+        tr:nth-child(odd) {
+            background-color: #FFFFFF; 
+        }
+        td:nth-child(5) {
+            text-align: center; 
+        }
+        button {
+            background-color: #E44D26; 
+            color: #FFFFFF; 
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px; 
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <input v-model="searchText" placeholder="Пошук за ПІБ">
+        <table>
+            <thead>
+                <tr>
+                    <th>ПІБ</th>
+                    <th>Рік народження</th>
+                    <th>Група</th>
+                    <th>Практика</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="student in students" :key="student.id">
+                    <td>
+                        <span :class="{ 'highlighted-text': searchText && student.highlighted }">{{ student.name }}</span>
+                    </td>
+                    <td>
+                        {{ student.birthYear }}
+                    </td>
+                    <td>
+                        <span :class="{ 'highlighted-text': searchText && student.highlighted }">{{ student.group }}</span>
+                    </td>
+                    <td><input type="checkbox" v-model="student.passed" /></td>
+                    <td><button @click="deleteStudent(student.id)">Видалити</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script>
+        const { ref, watchEffect, onMounted } = Vue;
+
+        Vue.createApp({
+            setup() {
+                const searchText = ref('');
+                const students = ref([
+                    { id: 1, name: 'Ковальчук Ірина', group: 'РПЗ 20 2/9', birthYear: 2003, passed: true },
+                    { id: 2, name: 'Захарченко Максим', group: 'РПЗ 20 1/9', birthYear: 2004, passed: false },
+                    { id: 3, name: 'Григоренко Ольга', group: 'РПЗ 20 1/9', birthYear: 2004, passed: true },
+                    { id: 4, name: 'Шевченко Сергій', group: 'РПЗ 20 2/9', birthYear: 2004, passed: true },
+                    { id: 5, name: 'Ткаченко Анна', group: 'РПЗ 20 1/9', birthYear: 2003, passed: false },
+                    { id: 6, name: 'Ковальов Андрій', group: 'РПЗ 20 2/9', birthYear: 2004, passed: true },
+                    { id: 7, name: 'Іванова Лариса', group: 'РПЗ 20 1/9', birthYear: 2003, passed: false },
+                    { id: 8, name: 'Мельник Марія', group: 'РПЗ 20 2/9', birthYear: 2004, passed: false },
+                    { id: 9, name: 'Шевчук Олег', group: 'РПЗ 20 1/9', birthYear: 2003, passed: true },
+                    { id: 10, name: 'Павлов Софія', group: 'РПЗ 20 1/9', birthYear: 2004, passed: false },
+                ]);
+
+                const deleteStudent = (id) => {
+                    const index = students.value.findIndex(student => student.id === id);
+                    if (index !== -1) {
+                        students.value = students.value.filter(student => student.id !== id);
+                        displayedStudents.value = displayedStudents.value.filter(student => student.id !== id);
+                    }
+                };
+
+                const highlightStudents = () => {
+                    students.value.forEach(student => {
+                        const nameParts = student.name.split(' ');
+                        const lastName = nameParts[0];
+                        const firstName = nameParts[1];
+                        const highlightedName = lastName.includes(searchText.value) || firstName.includes(searchText.value);
+                        const highlightedGroup = student.group.includes(searchText.value);
+                        student.highlighted = highlightedName || highlightedGroup;
+                    });
+                };
+
+                onMounted(() => {
+                    watchEffect(() => {
+                        highlightStudents();
+                    });
+                });
+
+                return {
+                    searchText, students, deleteStudent,
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
