@@ -126,7 +126,6 @@
                     const index = students.value.findIndex(student => student.id === id);
                     if (index !== -1) {
                         students.value = students.value.filter(student => student.id !== id);
-                        displayedStudents.value = displayedStudents.value.filter(student => student.id !== id);
                     }
                 };
 
