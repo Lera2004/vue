@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task3</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffe7e7;
+        }
+
+        #app,
+        #databinding {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f0ffab;
+            border: 1px solid #fca2a2;
+            border-radius: 5px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .input-container {
+            margin-bottom: 15px;
+        }
+
+        .input-container span {
+            font-size: 16px;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        #databinding div {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h2>Task1</h2>
+        <div class="input-container">
+            <span>Enter Age:</span>
+            <input v-model.number="age" type="number">
+            <p>{{ age }}</p>
+        </div>
+        <div class="input-container">
+            <span>Enter Message:</span>
+            <input v-model.lazy="msg">
+            <p>{{ msg }}</p>
+        </div>
+        <div class="input-container">
+            <span>Enter Message:</span>
+            <input v-model.trim="message">
+            <p>{{ message }}</p>
+        </div>
+    </div>
+
+    <div id="databinding">
+        <h2>Task2</h2>
+        <div v-bind:style="styleobj" v-on:mouseover="changebgcolor" v-on:mouseout="originalcolor"></div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                age: '',
+                msg: '',
+                message: ''
+            }
+        });
+
+        new Vue({
+            el: '#databinding',
+            data: {
+                styleobj: {
+                    width: "100px",
+                    height: "100px",
+                    backgroundColor: "red"
+                }
+            },
+            methods: {
+                changebgcolor: function () {
+                    this.styleobj.backgroundColor = "green";
+                },
+                originalcolor: function () {
+                    this.styleobj.backgroundColor = "red";
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
